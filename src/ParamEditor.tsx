@@ -1,4 +1,5 @@
-// TODO@ следует заменить утверждения типов на требуемую бизнесу обработку ошибок
+// TODO@ следует добавить требуемую логикой бизнеса обработку ошибок в полном объему
+// TODO@ при дальшейшей разработке стоит разнести данный компонент: типы и классы по разным файлам
 import { ChangeEvent, Component } from 'react';
 
 type TRecord = Record<string, string | number>;
@@ -99,6 +100,7 @@ class ParamEditor extends Component<IProps, IState> {
   }
 
   public getModel(): Model {
+    // Обратно переформатируем Map в исходный тип Model
     const model: Model = { paramValues: [] };
     for (const key of this.state.modelMap.keys()) {
       model.paramValues.push({
@@ -140,24 +142,24 @@ class ParamEditor extends Component<IProps, IState> {
   /**
    * Функция для обработки структуры данных вида Ключ - Значение
    */
-  private getObjPar(param: IParam) {
+  private getObjPar<T extends TRecord>(param: IParam) {
     const inputKeyId = 'newObjKeyInput';
     const inputValueId = 'newObjValInput';
     const id = param.id;
-    const valParam = this.getMapElById(id) as TRecord;
+    const valParam = this.getMapElById(id) as T;
 
     this.checkExistValByPar(id, this.state.DEF_OBJ_VAL);
 
     const handleDelete = (key: string) => {
-      this.updateMap<TRecord>(id, (par: TRecord) => delete par[key]);
+      this.updateMap<T>(id, (par: T) => delete par[key]);
     };
 
     const handleAdd = (e: React.MouseEvent<HTMLButtonElement>) => {
       const { key, value } = this.searchInputValues(e, { key: inputKeyId, value: inputValueId });
       if (key.length === 0 || value.length === 0) return;
 
-      this.updateMap<TRecord>(id, (par: TRecord, map: TModelMap) => {
-        par[key] = value;
+      this.updateMap<T>(id, (par: T, map: TModelMap) => {
+        (par as TRecord)[key] = value;
         map.delete(id);
         map.set(id, { ...par });
       })
@@ -187,14 +189,14 @@ class ParamEditor extends Component<IProps, IState> {
   /**
    * Функция для обработки структуры данных вида Array
    */
-  private getArPar(param: IParam) {
+  private getArPar<T extends TArr>(param: IParam) {
     const inputId = 'newArrValInput';
     const id = param.id;
 
     this.checkExistValByPar(id, this.state.DEF_AR_VAL);
 
     const handleDelete = (i: number) => {
-      this.updateMap<TArr>(id, (par: TArr, map: TModelMap) => {
+      this.updateMap<T>(id, (par: T, map: TModelMap) => {
         map.set(id, par.filter((_, k) => k !== i))
       });
     }
@@ -202,12 +204,12 @@ class ParamEditor extends Component<IProps, IState> {
     const handleAdd = (e: React.MouseEvent<HTMLButtonElement>) => {
       const { value } = this.searchInputValues(e, { value: inputId });
       if (value.length === 0) return;
-      this.updateMap<TArr>(id, (par: TArr) => { par.push(value) });
+      this.updateMap<T>(id, (par: T) => { par.push(value) });
     }
 
     return (
       <ul style={this.getUlStyle()}>
-        {(this.getMapElById(id) as TArr).map((el, i) => {
+        {(this.getMapElById(id) as T).map((el, i) => {
           return (
             <li key={el + i} style={this.getLiStyle()}>
               <p style={{ margin: '0' }}>{el}</p>
