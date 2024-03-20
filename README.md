@@ -1,5 +1,8 @@
 # Тестовое от Selsup
 
+### Deploy
+https://art-frich.github.io/Selsup-test-task/
+
 ### Задача
 ##### Редактор параметров
 
