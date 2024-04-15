@@ -1,4 +1,4 @@
-// TODO@ следует добавить требуемую логикой бизнеса обработку ошибок в полном объему
+// TODO@ следует добавить требуемую логикой бизнеса обработку ошибок в полном объеме
 // TODO@ при дальшейшей разработке стоит разнести данный компонент: типы и классы по разным файлам
 import { ChangeEvent, Component } from 'react';
 
@@ -51,7 +51,7 @@ class ParamEditor extends Component<IProps, IState> {
 
   private getMapElById = (id: number) => this.state.modelMap.get(id);
   /**
-   * Использовать с осторожностью. Напрямую изменяет стейт
+   * Использовать с осторожностью. Напрямую изменяет стейт. Нет перерендера компонента.
    */
   private setMapElById = (id: number, val: TParamValue) => this.state.modelMap.set(id, val);
   /**
@@ -88,8 +88,6 @@ class ParamEditor extends Component<IProps, IState> {
    * Обновляет стейт model по id параметра и callback обработчика параметра
    */
   private updateMap = <T,>(id: number, callback: (par: T, map: TModelMap) => void) => {
-    // IMPORTANT помним, что setState срабатывает 2 раза и опирается на prev
-    // баг чётко проявится, если следующие 3 строки прокинуть внутрь setState
     const updMap = new Map(this.state.modelMap);
     const val = updMap.get(id) as T;
     callback(val, updMap);
@@ -242,6 +240,17 @@ class ParamEditor extends Component<IProps, IState> {
   render() {
     return (
       <div style={{ width: 'min-content', margin: 'auto' }}>
+        <div>
+          <h3 style={{ marginBottom: '0' }}>github</h3>
+          <a href='https://github.com/Art-Frich/Selsup-test-task/tree/main'>
+            https://github.com/Art-Frich/Selsup-test-task/tree/main</a>
+        </div>
+        <div>
+          <h3 style={{ marginBottom: '0' }}>Код</h3>
+          <a href='https://github.com/Art-Frich/Selsup-test-task/blob/main/src/ParamEditor.tsx'>
+            https://github.com/Art-Frich/Selsup-test-task/blob/main/src/ParamEditor.tsx
+          </a>
+        </div>
         <h1 style={{ textAlign: 'center' }}>IParam Editor</h1>
         <ul style={this.getUlStyle()}>
           {this.props.params.map(param => {
@@ -256,7 +265,7 @@ class ParamEditor extends Component<IProps, IState> {
           })}
         </ul>
 
-        {/* Для проверки по месту обработки */}
+        {/* Для проверки после обработки */}
         <button onClick={() => console.log(this.getModel())} style={{ padding: '10px 5px' }}>
           вывести getModel() в console
         </button>
